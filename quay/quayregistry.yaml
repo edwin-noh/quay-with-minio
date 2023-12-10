@@ -1,0 +1,31 @@
+kind: QuayRegistry
+apiVersion: quay.redhat.com/v1
+metadata:
+  name: quay-registry
+spec:
+  configBundleSecret: init-config-bundle-secret
+  components:
+    - kind: clair
+      managed: false
+    - kind: clairpostgres
+      managed: false
+    - kind: postgres
+      managed: true
+      overrides:
+        resources: ''
+    - kind: objectstorage
+      managed: false
+    - kind: redis
+      managed: true
+    - kind: route
+      managed: true
+    - kind: mirror
+      managed: false
+    - kind: monitoring
+      managed: false
+    - kind: quay
+      managed: true
+      overrides:
+        replicas: 1
+    - kind: horizontalpodautoscaler
+      managed: false

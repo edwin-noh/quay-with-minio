@@ -1,0 +1,20 @@
+FEATURE_USER_INITIALIZE: true
+BROWSER_API_CALLS_XHR_ONLY: false
+# SERVER_HOSTNAME: quay-server.example.com
+# SETUP_COMPLETE: true
+SUPER_USERS:
+  - quayadmin
+FEATURE_USER_CREATION: false
+DISTRIBUTED_STORAGE_CONFIG:
+  minioStorage:
+    - RadosGWStorage
+    - hostname: minio.minio.svc.cluster.local
+      access_key: JHLn8bpvp2VM078NOb2m
+      secret_key: NuZuXUGI3vUp9rE9S64gKiDMM3TEHLiueHrMEImP
+      bucket_name: quay
+      is_secure: false
+      port: 9000
+      storage_path: /datastorage/registry
+DISTRIBUTED_STORAGE_DEFAULT_LOCATIONS: []
+DISTRIBUTED_STORAGE_PREFERENCE:
+    - minioStorage

@@ -1,0 +1,11 @@
+  apiVersion: quay.redhat.com/v1
+  kind: QuayIntegration
+  metadata:
+    name: edwin-quayintegration
+  spec:
+    clusterID: openshift
+    credentialsSecret:
+      namespace: openshift-operators
+      name: quay-edwin
+    quayHostname: https://quay.edwin.home
+    insecureRegistry: true

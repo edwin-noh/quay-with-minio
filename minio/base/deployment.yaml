@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  labels:
+    app: minio
+spec:
+  selector:
+    matchLabels:
+      app: minio
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:      
+      containers:
+        - name: minio
+          image: 'quay.io/minio/minio:latest'
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - '-c'
+          args:
+            - 'minio server /data --address :9000 --console-address :9090'
+          ports:
+            - name: console
+              containerPort: 9090
+              protocol: TCP
+          volumeMounts:
+            - name: localvolume
+              mountPath: /data
+      volumes:
+        - name: localvolume
+          persistentVolumeClaim:
+            claimName: minio
