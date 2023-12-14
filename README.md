@@ -37,11 +37,11 @@ spec:
 Deploy an instance development purpose
 - https://min.io/docs/minio/kubernetes/openshift/index.html - `MinIO Dev Mode`
 
-### 1-3. Create bucket for Quay
+### 1-3.Create bucket for Quay
 
-## 2. Install Quay
+## 2.Install Quay
 
-### 2-1. Pre configuration
+### 2-1.Pre configuration
 
 create `config.yaml`` file
 ```yaml
@@ -75,7 +75,7 @@ ROBOTS_DISALLOW: false
 oc create secret -n quay-enterprise generic --from-file config.yaml=./config.yaml init-config-bundle-secret
 ```
 
-### 2-2. Create a Quay instance
+### 2-2.Create a Quay instance
 
 - quay-registry definition
 ```yaml
@@ -116,8 +116,33 @@ spec:
 oc create -n quay-enterprise -f quayregistry.yaml
 ```
 
-#Quay bridge operator configuration
+> - Remove resource request
+> oc get deployment quay-operator.v3.10.0 -n openshift-operator
+> set `SKIP_RESOURCE_REQUESTS` environment variable to `true`
 
+## 3.Quay bridge operator
+
+Create access token in Quay for bridge operator
+```bash
+oc create secret -n openshift-operators generic quay-edwin --from-literal=token=${TOKEN}
 ```
-oc create secret -n openshift-operators generic quay-edwin --from-literal=token=d0P4kDYT2tKhQ3xaki422HgaUtMmYGbExtn04snh
+
+Create Quay integration yaml
+```yaml
+  apiVersion: quay.redhat.com/v1
+  kind: QuayIntegration
+  metadata:
+    name: edwin-quayintegration
+  spec:
+    clusterID: sno-hub
+    credentialsSecret:
+      namespace: openshift-operators
+      name: quay-edwin
+    quayHostname: https://quay.edwin.home
+    insecureRegistry: true
 ```
+
+```bash
+oc create -f quay-integration.yaml -n openshift-operator
+```
+- https://access.redhat.com/documentation/en-us/red_hat_quay/3.10/html/red_hat_quay_operator_features/quay-bridge-operator
